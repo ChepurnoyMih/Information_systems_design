@@ -1,0 +1,14 @@
+public class Client
+{
+    private int id_Client;
+    private string фамилия;
+    private string имя;
+    private string отчество;
+    private string комментарий;
+
+    public int ID_Client { get { return id_Client; } set { id_Client = value; } }
+    public string Фамилия { get { return фамилия; } set { фамилия = value; } }
+    public string Имя { get { return имя; } set { имя = value; } }
+    public string Отчество { get { return отчество; } set { отчество = value; } }
+    public string Комментарий { get { return комментарий; } set { комментарий = value; } }
+}
