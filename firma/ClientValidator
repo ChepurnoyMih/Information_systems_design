@@ -1,57 +1,32 @@
 public static class ClientValidator
-{
-    public static bool ValidateID(int id)
     {
-        // Логика валидации ID_Client
-        return id > 0;
+        public static bool ValidateID(int id)
+        {            
+            return id > 0;
+        }
+
+        public static bool ValidateSurname(string surname)
+        {            
+            return !string.IsNullOrEmpty(surname);
+        }
+
+        public static bool ValidateName(string name)
+        {            
+            return !string.IsNullOrEmpty(name);
+        }
+
+        public static bool ValidatePatronymic(string patronymic)
+        {            
+            return !string.IsNullOrEmpty(patronymic);
+        }
+
+        public static bool ValidateComment(string comment)
+        {            
+            return !string.IsNullOrEmpty(comment);
+        }
     }
 
-    public static bool ValidateФамилия(string фамилия)
-    {
-        // Логика валидации Фамилии
-        return !string.IsNullOrEmpty(фамилия);
-    }
 
-    public static bool ValidateИмя(string имя)
-    {
-        // Логика валидации Имени
-        return !string.IsNullOrEmpty(имя);
-    }
-
-    public static bool ValidateОтчество(string отчество)
-    {
-        // Логика валидации Отчества
-        return !string.IsNullOrEmpty(отчество);
-    }
-
-    public static bool ValidateКомментарий(string комментарий)
-    {
-        // Логика валидации Комментария
-        return !string.IsNullOrEmpty(комментарий);
-    }
-}
-
-/*Убрать повтор кода*/
-
-public static class ClientValidator
-{
-    private static bool ValidateField(object value, Func<object, bool> validation)
-    {
-        return validation(value);
-    }
-
-    public static bool ValidateID(int id)
-    {
-        return ValidateField(id, x => (int)x > 0);
-    }
-
-    public static bool ValidateФамилия(string фамилия)
-    {
-        return ValidateField(фамилия, x => !string.IsNullOrEmpty((string)x));
-    }
-
-    // Аналогичные методы для остальных полей
-}
 
 
 
