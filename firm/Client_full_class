@@ -1,0 +1,109 @@
+public class Client
+{
+    private int _id_Client;
+    private string _surname;
+    private string _name;
+    private string _patronymic;
+    private string _comment;
+
+    public int ID_Client
+    {
+        get { return _id_Client; }
+        set
+        {
+            if (ValidateID(value))
+                _id_Client = value;
+            else
+                throw new ArgumentException("Некорректный ID");
+        }
+    }
+
+    public string Surname
+    {
+        get { return _surname; }
+        set
+        {
+            if (ValidateSurname(value))
+                _surname = value;
+            else
+                throw new ArgumentException("Некорректная фамилия");
+        }
+    }
+
+    public string Name
+    {
+        get { return _name; }
+        set
+        {
+            if (ValidateName(value))
+                _name = value;
+            else
+                throw new ArgumentException("Некорректное имя");
+        }
+    }
+
+    public string Patronymic
+    {
+        get { return _patronymic; }
+        set
+        {
+            if (ValidatePatronymic(value))
+                _patronymic = value;
+            else
+                throw new ArgumentException("Некорректное отчество");
+        }
+    }
+
+    public string Comment
+    {
+        get { return _comment; }
+        set
+        {
+            if (ValidateComment(value))
+                _comment = value;
+            else
+                throw new ArgumentException("Некорректный комментарий");
+        }
+    }
+
+    public Client(int id, string surname, string name, string patronymic, string comment)
+    {
+        ID_Client = id;
+        Surname = surname;
+        Name = name;
+        Patronymic = patronymic;
+        Comment = comment;
+    }
+
+    private static bool ValidateID(int id)
+    {
+        return id > 0;
+    }
+
+    private static bool ValidateSurname(string surname)
+    {
+        return !string.IsNullOrEmpty(surname);
+    }
+
+    private static bool ValidateName(string name)
+    {
+        return !string.IsNullOrEmpty(name);
+    }
+
+    private static bool ValidatePatronymic(string patronymic)
+    {
+        return !string.IsNullOrEmpty(patronymic);
+    }
+
+    private static bool ValidateComment(string comment)
+    {
+        return !string.IsNullOrEmpty(comment);
+    }
+
+    public void PrintClientInfo()
+    {
+        Console.WriteLine($"Client ID: {ID_Client}");
+        Console.WriteLine($"Full name: {Surname} {Name} {Patronymic}");
+        Console.WriteLine($"Comment: {Comment}");
+    }
+}
