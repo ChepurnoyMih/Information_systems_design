@@ -1,14 +1,23 @@
 public class Client
 {
-    private int id_Client;
-    private string Surname;
-    private string Name;
-    private string Patronymic;
-    private string Comment;
+        private int _id_Client;
+        private string _surname;
+        private string _name;
+        private string _patronymic;
+        private string _comment;
 
-    public int ID_Client { get { return id_Client; } set { id_Client = value; } }
-    public string Surname { get { return Surname; } set { Surname = value; } }
-    public string Name { get { return Name; } set { Name = value; } }
-    public string Patronymic { get { return Patronymic; } set { Patronymic = value; } }
-    public string Comment { get { return Comment; } set { Comment = value; } }
+        public int ID_Client{get { return _id_Client; } set { _id_Client = value; }}
+        public string Surname{get { return _surname; } set { _surname = value; }}
+        public string Name{get { return _name; } set { _name = value; }}
+        public string Patronymic{get { return _patronymic; } set { _patronymic = value; }}
+        public string Comment{get { return _comment; } set { _comment = value; }}
+
+        public Client(int id, string surname, string name, string patronymic, string comment)
+        {
+            _id_Client = id;
+            _surname = surname;
+            _name = name;
+            _patronymic = patronymic;
+            _comment = comment;
+        }  
 }
