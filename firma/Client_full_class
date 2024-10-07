@@ -4,6 +4,7 @@ public class Client
     private string _surname;
     private string _name;
     private string _patronymic;
+    private string _email;
     private string _comment;
 
     public int ID_Client
@@ -54,6 +55,18 @@ public class Client
         }
     }
 
+    public string Email
+    {
+        get { return _email; }
+        set
+        {
+            if (ValidateEmail(value))
+                _email = value;
+            else
+                throw new ArgumentException("Некорректный email");
+        }
+    }
+
     public string Comment
     {
         get { return _comment; }
@@ -66,12 +79,13 @@ public class Client
         }
     }
 
-    public Client(int id, string surname, string name, string patronymic, string comment)
+    public Client(int id, string surname, string name, string patronymic, string email, string comment)
     {
         ID_Client = id;
         Surname = surname;
         Name = name;
         Patronymic = patronymic;
+        Email = email;
         Comment = comment;
     }
 
@@ -95,6 +109,12 @@ public class Client
         return !string.IsNullOrEmpty(patronymic);
     }
 
+    private static bool ValidateEmail(string email)
+    {
+        // Простая валидация email, можно использовать более сложные регулярные выражения
+        return !string.IsNullOrEmpty(email) && email.Contains("@");
+    }
+
     private static bool ValidateComment(string comment)
     {
         return !string.IsNullOrEmpty(comment);
@@ -104,6 +124,7 @@ public class Client
     {
         Console.WriteLine($"Client ID: {ID_Client}");
         Console.WriteLine($"Full name: {Surname} {Name} {Patronymic}");
+        Console.WriteLine($"Email: {Email}");
         Console.WriteLine($"Comment: {Comment}");
     }
 }
