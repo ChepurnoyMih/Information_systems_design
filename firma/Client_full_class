@@ -134,5 +134,61 @@ public class Client
 
         // Конструктор без отчества
         public Client(int id, string surname, string name, string email, string comment)
-         : this(id, surname, name, string.Empty, email, comment) { }        
+         : this(id, surname, name, string.Empty, email, comment) { }
+
+        // Метод для краткого вывода информации
+        public void PrintShortInfo()
+        {
+            Console.WriteLine($"Client ID: {ID_Client}, Name: {Name}, Surname: {Surname}");
+        }      
+
+        // Переопределение Equals() для сравнения объектов
+        public override bool Equals(object obj)
+        {
+            if (obj is Client other)
+            {
+                return ID_Client == other.ID_Client &&
+                Surname == other.Surname &&
+                Name == other.Name &&
+                Patronymic == other.Patronymic &&
+                Email == other.Email &&
+                Comment == other.Comment;
+            }
+            return false;
+        }
+
+        // Переопределение GetHashCode()
+        public override int GetHashCode() => ID_Client;
+
+        // Перегрузка операторов
+        public static bool operator ==(Client left, Client right) => Equals(left, right);
+        public static bool operator !=(Client left, Client right) => !Equals(left, right);
+
+
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var client1 = new Client(1, "Иванов", "Иван", "Иванович", "ivanov@example.com", "Комментарий");
+            var client2 = new Client(1, "Иванов", "Иван", "Иванович", "ivanov@example.com", "Комментарий");
+            var client3 = new Client(2, "Петров", "Петр", "Петрович", "petrov@example.com", "Другой комментарий");
+
+            // Краткий вывод
+            client1.PrintShortInfo();
+            client2.PrintShortInfo();
+
+            // Полный вывод
+            client1.PrintClientInfo();
+            client2.PrintClientInfo();
+
+            // Сравнение объектов
+            if (client1 == client2)
+                Console.WriteLine("client1 и client2 равны.");
+            else
+                Console.WriteLine("client1 и client2 не равны.");
+
+            if (client1 != client3)
+                Console.WriteLine("client1 и client3 не равны.");
+        }
     }
