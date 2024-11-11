@@ -140,7 +140,7 @@ public class Client
         public void PrintShortInfo()
         {
             Console.WriteLine($"Client ID: {ID_Client}, Name: {Name}, Surname: {Surname}");
-        }      
+        }
 
         // Переопределение Equals() для сравнения объектов
         public override bool Equals(object obj)
@@ -165,6 +165,16 @@ public class Client
         public static bool operator !=(Client left, Client right) => !Equals(left, right);
 
 
+    }
+
+    public class ClientSummary : Client
+    {
+        public ClientSummary(int id,string surname,string name,string patronymic) : base(id, surname, name, patronymic, null) { }
+        public void PrintClientSummaryInfo()
+        {
+            Console.WriteLine($"Client ID: {ID_Client}");
+            Console.WriteLine($"Full name: {Surname} {Name} {Patronymic}");            
+        }
     }
     class Program
     {
