@@ -1,5 +1,4 @@
-
-    public class Client
+public class Client
     {
         private int _id_Client;
         private string _surname;
@@ -221,7 +220,7 @@
             var client1 = new Client(1, "Иванов", "Иван", "Иванович", "ivanov@example.com", "Комментарий");
             var client2 = new Client(1, "Иванов", "Иван", "Иванович", "ivanov@example.com", "Комментарий");
             var client3 = new Client(2, "Петров", "Петр", "Петрович", "petrov@example.com", "Другой комментарий");
-            
+
             // Краткий вывод
             client1.PrintShortInfo();
             client2.PrintShortInfo();
@@ -229,7 +228,7 @@
             // Полный вывод
             client1.PrintClientInfo();
             client2.PrintClientInfo();
-            
+
 
             // Сравнение объектов
             if (client1 == client2)
@@ -249,8 +248,9 @@
      };
 
             // Поиск клиента по фамилии
-            Console.WriteLine("---------Поиск клиента по фамилии");
             string searchSurname = "Петров";
+            Console.WriteLine("---------Поиск клиента по фамилии:" + searchSurname);
+            
             Client foundBySurname = Client.FindClientBySurname(clients, searchSurname);
             if (foundBySurname != null)
                 foundBySurname.PrintClientInfo();
@@ -258,8 +258,9 @@
                 Console.WriteLine("Клиент с такой фамилией не найден.");
 
             // Поиск клиента по имени
-            Console.WriteLine("---------Поиск клиента по имени");
             string searchName = "Сидорzcx";
+            Console.WriteLine("---------Поиск клиента по имени:" + searchName);
+            
             Client foundByName = Client.FindClientByName(clients, searchName);
             if (foundByName != null)
                 foundByName.PrintClientInfo();
@@ -267,8 +268,9 @@
                 Console.WriteLine("Клиент с таким именем не найден.");
 
             // Поиск клиента по email
-            Console.WriteLine("---------Поиск клиента по email");
             string searchEmail = "ivanov@example.com";
+            Console.WriteLine("---------Поиск клиента по email:" + searchEmail);
+            
             Client foundByEmail = Client.FindClientByEmail(clients, searchEmail);
             if (foundByEmail != null)
                 foundByEmail.PrintClientInfo();
@@ -276,4 +278,3 @@
                 Console.WriteLine("Клиент с таким email не найден.");
         }
     }
-
