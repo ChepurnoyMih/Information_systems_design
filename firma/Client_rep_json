@@ -1,0 +1,75 @@
+public class Client_rep_json : Client
+{
+    private static List<Client> clientList = new List<Client>();
+    private static int nextId = 1; // Для генерации ID
+
+    // Метод для чтения из файла
+    public static void ReadFromFile(string filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+            clientList = JsonConvert.DeserializeObject<List<Client>>(json) ?? new List<Client>();
+            nextId = clientList.Any() ? clientList.Max(c => c.ID_Client) + 1 : 1;
+        }
+    }
+
+    // Метод для записи в файл
+    public static void SaveToFile(string filePath)
+    {
+        string json = JsonConvert.SerializeObject(clientList, Formatting.Indented);
+        File.WriteAllText(filePath, json);
+    }
+
+    // Метод для добавления клиента 
+    public static void AddClient(Client client)
+    {
+        client.ID_Client = nextId++;
+        clientList.Add(client);
+    }
+
+    // Метод для получения клиента по ID
+    public static Client GetClientById(int id)
+    {
+        return clientList.FirstOrDefault(c => c.ID_Client == id);
+    }
+
+    // Метод для получения подсписка клиентов
+    public static List<Client> GetK_N_ShortList(int n, int k)
+    {
+        return clientList.Skip(n).Take(k).ToList();
+    }
+
+    // Метод для сортировки клиентов по полю
+    public static void SortClientsByField(Func<Client, object> keySelector)
+    {
+        clientList = clientList.OrderBy(keySelector).ToList();
+    }
+
+    // Метод для обновления клиента по ID
+    public static void UpdateClientById(int id, Client updatedClient)
+    {
+        var index = clientList.FindIndex(c => c.ID_Client == id);
+        if (index >= 0)
+        {
+            clientList[index] = updatedClient;
+            updatedClient.ID_Client = id; // Сохраняем оригинальный ID
+        }
+    }
+
+    // Метод для удаления клиента по ID
+    public static void DeleteClientById(int id)
+    {
+        var clientToRemove = clientList.FirstOrDefault(c => c.ID_Client == id);
+        if (clientToRemove != null)
+        {
+            clientList.Remove(clientToRemove);
+        }
+    }
+
+    // Метод для получения количества клиентов
+    public static int GetCount()
+    {
+        return clientList.Count;
+    }
+}
