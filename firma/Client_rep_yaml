@@ -1,0 +1,68 @@
+public class Client_rep_yaml : Client
+{
+    private static List<Client> clientList = new List<Client>();
+    private static int nextId = 1; // Для генерации нового ID
+
+    // Метод для чтения из YAML файла
+    public static void ReadFromFile(string filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            var yaml = File.ReadAllText(filePath);
+            var deserializer = new DeserializerBuilder().Build();
+            clientList = deserializer.Deserialize<List<Client>>(yaml) ?? new List<Client>();
+            nextId = clientList.Any() ? clientList.Max(c => c.ID_Client) + 1 : 1;
+        }
+    }
+
+    // Метод для записи в YAML файл
+    public static void SaveToFile(string filePath)
+    {
+        var serializer = new SerializerBuilder().Build();
+        var yaml = serializer.Serialize(clientList);
+        File.WriteAllText(filePath, yaml);
+    }
+
+    // Добавление нового клиента
+    public static void AddClient(Client client)
+    {
+        client.ID_Client = nextId++;
+        clientList.Add(client);
+    }
+
+    // Получение клиента по ID
+    public static Client GetClientById(int id)
+    {
+        return clientList.FirstOrDefault(c => c.ID_Client == id);
+    }
+
+    // Обновление клиента по ID
+    public static void UpdateClientById(int id, Client updatedClient)
+    {
+        var client = GetClientById(id);
+        if (client != null)
+        {
+            client.Surname = updatedClient.Surname;
+            client.Name = updatedClient.Name;
+            client.Patronymic = updatedClient.Patronymic;
+            client.Email = updatedClient.Email;
+            client.Comment = updatedClient.Comment;
+        }
+    }
+
+    // Удаление клиента по ID
+    public static void DeleteClientById(int id)
+    {
+        var clientToRemove = GetClientById(id);
+        if (clientToRemove != null)
+        {
+            clientList.Remove(clientToRemove);
+        }
+    }
+
+    // Получение списка клиентов
+    public static List<Client> GetAllClients()
+    {
+        return clientList;
+    }
+}
