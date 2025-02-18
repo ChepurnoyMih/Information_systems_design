@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-
+using YamlDotNet.Serialization;
 public class Client
 {
     private int _id_Client;
@@ -8,6 +8,8 @@ public class Client
     private string _patronymic;
     private string _email;
     private string _comment;
+
+    public Client() { }
 
     public int ID_Client
     {
@@ -38,7 +40,8 @@ public class Client
         get { return _name; }
         set
         {
-            if (ValidateString(value)) _name = value;
+            if (ValidateString(value)) 
+                _name = value;
             else
                 throw new ArgumentException("Некорректное имя");
         }
@@ -78,14 +81,15 @@ public class Client
             else
                 throw new ArgumentException("Некорректный комментарий");
         }
-    }    
+    }
 
     // Методы валидации
-    private static bool ValidateID(int id) => id > 0;
+    public static bool ValidateID(int id) => id > 0;
 
     private static bool ValidateString(string value) => !string.IsNullOrWhiteSpace(value);
 
-    private static bool ValidateEmail(string email) => !string.IsNullOrEmpty(email) && email.Contains("@") && email.Contains(".");
+    public static bool ValidateEmail(string email) => !string.IsNullOrEmpty(email) && email.Contains("@");
+    //конструктор
     public Client(int id, string surname, string name, string patronymic, string email, string comment)
     {
         ID_Client = id;
@@ -96,17 +100,24 @@ public class Client
         Comment = comment;
     }
 
-    // конструктор для работы с JSON
-    public Client(string json)
-    {
-        var clientData = JsonConvert.DeserializeObject<Client>(json);
 
-        ID_Client = clientData.ID_Client;
-        Surname = clientData.Surname;
-        Name = clientData.Name;
-        Patronymic = clientData.Patronymic;
-        Email = clientData.Email;
-        Comment = clientData.Comment;
+    // Статический метод для загрузки клиентов из JSON
+    public static Client[] LoadFromJsonString(string jsonString)
+    {
+        if (string.IsNullOrWhiteSpace(jsonString))
+        {
+            throw new ArgumentException("JSON-строка не может быть пустой или содержать только пробелы.", nameof(jsonString));
+        }
+
+        try
+        {
+            // Десериализуем JSON в массив объектов Client
+            return JsonConvert.DeserializeObject<Client[]>(jsonString);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Ошибка при загрузке клиентов из JSON-строки: {ex.Message}");
+        }
     }
 
 
@@ -154,334 +165,7 @@ public class Client
     public static bool operator ==(Client left, Client right) => Equals(left, right);
     public static bool operator !=(Client left, Client right) => !Equals(left, right);
 
-    // Метод для поиска клиентов по фамилии
-    public static Client FindClientBySurname(Client[] clients, string surname)
-    {
-        foreach (var client in clients)
-        {
-            if (client.Surname.Equals(surname, StringComparison.OrdinalIgnoreCase))
-            {
-                return client; // Возвращаем найденного клиента
-            }
-        }
-        return null; // Если не найдено, возвращаем null
-    }
-
-    // Метод для поиска клиентов по имени
-    public static Client FindClientByName(Client[] clients, string name)
-    {
-        foreach (var client in clients)
-        {
-            if (client.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-            {
-                return client; // Возвращаем найденного клиента
-            }
-        }
-        return null; // Если не найдено, возвращаем null
-    }
-
-    // Метод для поиска клиентов по email
-    public static Client FindClientByEmail(Client[] clients, string email)
-    {
-        foreach (var client in clients)
-        {
-            if (client.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
-            {
-                return client; // Возвращаем найденного клиента
-            }
-        }
-        return null; // Если не найдено, возвращаем null
-    }
-}
-
-public class ClientSummary : Client
-{
-    public ClientSummary(int id, string surname, string name, string patronymic) : base(id, surname, name, patronymic, null) { }
-    public void PrintClientSummaryInfo()
-    {
-        Console.WriteLine($"Client ID: {ID_Client}");
-        Console.WriteLine($"Full name: {Surname} {Name} {Patronymic}");
-    }
-}
-class Program
-{
-    static void Main(string[] args)
-    {
-        
-        var client1 = new Client(1, "Иванов", "Иван", "Иванович", "ivanov@example.com", "Комментарий");
-        var client2 = new Client(1, "Иванов", "Иван", "Иванович", "ivanov@example.com", "Комментарий");
-        var client3 = new Client(2, "Петров", "Петр", "Петрович", "petrov@example.com", "Другой комментарий");
-
-        // Краткий вывод
-        client1.PrintShortInfo();
-        client2.PrintShortInfo();
-        
-        // Полный вывод
-        client1.PrintClientInfo();
-        client2.PrintClientInfo();
-
-
-        // Сравнение объектов
-        if (client1 == client2)
-            Console.WriteLine("client1 и client2 равны.");
-        else
-            Console.WriteLine("client1 и client2 не равны.");
-
-        if (client1 != client3)
-            Console.WriteLine("client1 и client3 не равны.");
-
-        // Создание массива клиентов
-        Client[] clients = new Client[]
-        {
-            new Client(1, "Иванов", "Иван", "Иванович", "ivanov@example.com", "Первый клиент"),
-            new Client(2, "Петров", "Петр", "Петрович", "petrov@example.com", "Второй клиент"),
-            new Client(3, "Сидоров", "Сидор", "Сидорович", "sidorov@example.com", "Третий клиент")
-        };
-
-        // Поиск клиента по фамилии
-        string Surname = "Петров";
-        Console.WriteLine("---------Поиск клиента по фамилии:" + Surname);
-
-        Client foundBySurname = Client.FindClientBySurname(clients, Surname);
-        if (foundBySurname != null)
-            foundBySurname.PrintClientInfo();
-        else
-            Console.WriteLine("Клиент с такой фамилией не найден.");
-
-        // Поиск клиента по имени
-        string Name = "Сидорzcx";
-        Console.WriteLine("---------Поиск клиента по имени:" + Name);
-
-        Client foundByName = Client.FindClientByName(clients, Name);
-        if (foundByName != null)
-            foundByName.PrintClientInfo();
-        else
-            Console.WriteLine("Клиент с таким именем не найден.");
-
-        // Поиск клиента по email
-        string Email = "ivanov@example.com";
-        Console.WriteLine("---------Поиск клиента по email:" + Email);
-
-        Client foundByEmail = Client.FindClientByEmail(clients, Email);
-        if (foundByEmail != null)
-            foundByEmail.PrintClientInfo();
-        else
-            Console.WriteLine("Клиент с таким email не найден.");
-    }
-}
-public class Client
-    {
-        private int _id_Client;
-        private string _surname;
-        private string _name;
-        private string _patronymic;
-        private string _email;
-        private string _comment;
-
-        public int ID_Client
-        {
-            get { return _id_Client; }
-            set
-            {
-                if (ValidateID(value))
-                    _id_Client = value;
-                else
-                    throw new ArgumentException("Некорректный ID");
-            }
-        }
-
-        public string Surname
-        {
-            get { return _surname; }
-            set
-            {
-                if (ValidateSurname(value))
-                    _surname = value;
-                else
-                    throw new ArgumentException("Некорректная фамилия");
-            }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (ValidateName(value))
-                    _name = value;
-                else
-                    throw new ArgumentException("Некорректное имя");
-            }
-        }
-
-        public string Patronymic
-        {
-            get { return _patronymic; }
-            set
-            {
-                if (ValidatePatronymic(value))
-                    _patronymic = value;
-                else
-                    throw new ArgumentException("Некорректное отчество");
-            }
-        }
-
-        public string Email
-        {
-            get { return _email; }
-            set
-            {
-                if (ValidateEmail(value))
-                    _email = value;
-                else
-                    throw new ArgumentException("Некорректный email");
-            }
-        }
-
-        public string Comment
-        {
-            get { return _comment; }
-            set
-            {
-                if (ValidateComment(value))
-                    _comment = value;
-                else
-                    throw new ArgumentException("Некорректный комментарий");
-            }
-        }
-
-        public Client(int id, string surname, string name, string patronymic, string email, string comment)
-        {
-            ID_Client = id;
-            Surname = surname;
-            Name = name;
-            Patronymic = patronymic;
-            Email = email;
-            Comment = comment;
-        }
-
-        private static bool ValidateID(int id)
-        {
-            return id > 0;
-        }
-
-        private static bool ValidateSurname(string surname)
-        {
-            return !string.IsNullOrEmpty(surname);
-        }
-
-        private static bool ValidateName(string name)
-        {
-            return !string.IsNullOrEmpty(name);
-        }
-
-        private static bool ValidatePatronymic(string patronymic)
-        {
-            return !string.IsNullOrEmpty(patronymic);
-        }
-
-        private static bool ValidateEmail(string email)
-        {
-
-            return !string.IsNullOrEmpty(email) && email.Contains("@");
-        }
-
-        private static bool ValidateComment(string comment)
-        {
-            return !string.IsNullOrEmpty(comment);
-        }
-
-        public void PrintClientInfo()
-        {
-            Console.WriteLine($"Client ID: {ID_Client}");
-            Console.WriteLine($"Full name: {Surname} {Name} {Patronymic}");
-            Console.WriteLine($"Email: {Email}");
-            Console.WriteLine($"Comment: {Comment}");
-        }
-
-        // Конструктор без email и комментария
-        public Client(int id, string surname, string name, string patronymic)
-         : this(id, surname, name, patronymic, null, null) { }
-
-        // Конструктор без отчества
-        public Client(int id, string surname, string name, string email, string comment)
-         : this(id, surname, name, string.Empty, email, comment) { }
-
-        // Метод для краткого вывода информации
-        public void PrintShortInfo()
-        {
-            Console.WriteLine($"Client ID: {ID_Client}, Name: {Name}, Surname: {Surname}");
-        }
-
-        // Переопределение Equals() для сравнения объектов
-        public override bool Equals(object obj)
-        {
-            if (obj is Client other)
-            {
-                return ID_Client == other.ID_Client &&
-                Surname == other.Surname &&
-                Name == other.Name &&
-                Patronymic == other.Patronymic &&
-                Email == other.Email &&
-                Comment == other.Comment;
-            }
-            return false;
-        }
-
-        // Переопределение GetHashCode()
-        public override int GetHashCode() => ID_Client;
-
-        // Перегрузка операторов
-        public static bool operator ==(Client left, Client right) => Equals(left, right);
-        public static bool operator !=(Client left, Client right) => !Equals(left, right);
-
-        // Метод для поиска клиентов по фамилии
-        public static Client FindClientBySurname(Client[] clients, string surname)
-        {
-            foreach (var client in clients)
-            {
-                if (client.Surname.Equals(surname, StringComparison.OrdinalIgnoreCase))
-                {
-                    return client; // Возвращаем найденного клиента
-                }
-            }
-            return null; // Если не найдено, возвращаем null
-        }
-
-        // Метод для поиска клиентов по имени
-        public static Client FindClientByName(Client[] clients, string name)
-        {
-            foreach (var client in clients)
-            {
-                if (client.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    return client; // Возвращаем найденного клиента
-                }
-            }
-            return null; // Если не найдено, возвращаем null
-        }
-
-        // Метод для поиска клиентов по email
-        public static Client FindClientByEmail(Client[] clients, string email)
-        {
-            foreach (var client in clients)
-            {
-                if (client.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
-                {
-                    return client; // Возвращаем найденного клиента
-                }
-            }
-            return null; // Если не найдено, возвращаем null
-        }
-    }
-
-    public class ClientSummary : Client
-    {
-        public ClientSummary(int id, string surname, string name, string patronymic) : base(id, surname, name, patronymic, null) { }
-        public void PrintClientSummaryInfo()
-        {
-            Console.WriteLine($"Client ID: {ID_Client}");
-            Console.WriteLine($"Full name: {Surname} {Name} {Patronymic}");
-        }
-    }
     
+
+    
+}
